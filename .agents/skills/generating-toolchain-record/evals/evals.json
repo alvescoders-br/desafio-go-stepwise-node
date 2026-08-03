@@ -1,0 +1,76 @@
+{
+  "skill": "generating-toolchain-record",
+  "version": "1.0.0",
+  "tests": [
+    {
+      "id": "EVAL-DTR-001",
+      "name": "Greenfield Java + React Spring Boot project",
+      "mode": "build",
+      "description": "Greenfield: ASD describes Spring Boot 3 backend (Java 21) plus a React 18 + Next.js 14 frontend, GCP-hosted, Kubernetes microservices. No PB, no source. Expect Backend (Java) + Frontend (Web) tabs, no Mobile tab, no legacy/migrating entries, validation-tools.md derived with Maven/JUnit/ESLint rows.",
+      "inputs": {
+        "project_name": "AcmeCheckout",
+        "dtr_mode": "greenfield",
+        "target_architecture_path": "./fixtures/eval-001/target-architecture",
+        "dtr_output_path": "./out/eval-001/dtr",
+        "derive_validation_tools": true,
+        "validation_tools_output_path": "./out/eval-001/context-pack"
+      },
+      "expected_outputs": [
+        "DTR-DTR-ACMECHECKOUT-{date}.md exists",
+        "DTR-AUDIT-DTR-ACMECHECKOUT-{date}.md exists",
+        "validation-tools.md exists at validation_tools_output_path",
+        "tabs_selected = [backend, frontend_web]",
+        "states_count.legacy == 0 AND states_count.migrating == 0 AND states_count.upgrading == 0",
+        "Toolchain Notes contains TBD entries (greenfield decisions pending) and Inferred entries",
+        "validation-tools.md contains rows for build (mvn compile), test (mvn test), and lint (eslint)"
+      ],
+      "expected_failure": null
+    },
+    {
+      "id": "EVAL-DTR-002",
+      "name": "Brownfield Python + Angular migration",
+      "mode": "build",
+      "description": "Brownfield: PB documents current state — Python 3.9 Flask backend with Angular 13 frontend; ASD describes target — Python 3.12 FastAPI backend with Angular 17 frontend. source_path provided (Flask + Angular 13 codebase). Expect Migration entries (Flask -> FastAPI, Angular 13 -> 17), Legacy entries for deprecated Flask plugins.",
+      "inputs": {
+        "project_name": "InternalPortal",
+        "dtr_mode": "brownfield",
+        "target_architecture_path": "./fixtures/eval-002/target-architecture",
+        "project_brief_path": "./fixtures/eval-002/project-brief.md",
+        "source_path": "./fixtures/eval-002/source",
+        "dtr_output_path": "./out/eval-002/dtr",
+        "derive_validation_tools": true,
+        "validation_tools_output_path": "./out/eval-002/context-pack"
+      },
+      "expected_outputs": [
+        "DTR file contains Migration Entries section with at least 2 rows (Flask -> FastAPI; Angular 13 -> 17)",
+        "Backend tab Language row state == migrating, version == target (3.12)",
+        "Frontend Framework row state == upgrading, version == current (13.x), Upgrade Entries lists target (17.x)",
+        "validation-tools.md OMITS rows whose state is migrating (legacy code is not the verification target) — only stable/upgrading rows present",
+        "DTR-AUDIT records source citations for every non-stable row (PB section or pom.xml/package.json line)"
+      ],
+      "expected_failure": null
+    },
+    {
+      "id": "EVAL-DTR-003",
+      "name": "REPAIR: surgical update of Mobile tab only",
+      "mode": "repair",
+      "description": "Existing DTR has Backend + Frontend + Mobile tabs but the Mobile tab has wrong Lint tool (Detekt for a React Native project — incorrect). failure_feedback targets the Mobile tab. Expect: Backend and Frontend preserved verbatim, Mobile Lint row corrected to ESLint, Toolchain Notes updated with one CHANGE_LOG entry.",
+      "inputs": {
+        "project_name": "MobileApp",
+        "dtr_mode": "greenfield",
+        "target_architecture_path": "./fixtures/eval-003/target-architecture",
+        "dtr_output_path": "./out/eval-003/dtr",
+        "derive_validation_tools": false,
+        "failure_feedback": "Mobile tab: Lint row currently shows 'Detekt' but project is React Native — should be ESLint. Update only the Mobile.Lint row; preserve all other tabs and rows."
+      },
+      "expected_outputs": [
+        "DTR file version incremented (e.g., 1.0.1)",
+        "Mobile tab Lint row tool changed from Detekt to ESLint",
+        "Backend and Frontend tabs unchanged (byte-equivalent to previous DTR for those sections)",
+        "DTR-AUDIT records the surgical REPAIR with CHANGE_LOG entry citing the directive",
+        "validation-tools.md NOT regenerated (derive_validation_tools=false)"
+      ],
+      "expected_failure": null
+    }
+  ]
+}

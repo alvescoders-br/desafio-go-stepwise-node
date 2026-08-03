@@ -1,0 +1,686 @@
+{
+  "schema_version": "1.1",
+  "offering": {
+    "name": "Loop Quick Small Feature",
+    "slug": "loop-quick-small-feature",
+    "description": "",
+    "documentation": ""
+  },
+  "generated_at": "2026-06-03T01:16:41Z",
+  "output_path": null,
+  "token_budget_path": null,
+  "supervision_plan_path": null,
+  "budget_audit_path": null,
+  "capabilities": [
+    {
+      "name": "quick-story-definition",
+      "session_id": "qsd-001",
+      "sdlc_phase": "discovery",
+      "has_review_verdict": false,
+      "init_params": {
+        "project_name": "project",
+        "request_path": "",
+        "story_type": "feature",
+        "source_path": "$PROJECT_DIR/source",
+        "context_pack_path": "$PROJECT_DIR/context-pack",
+        "feature_id": "$.title",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/quick-story-definition",
+        "quick_story_output_folder": "quick-story-spec",
+        "quick_story_output_path": "$PROJECT_DIR/artifacts/outputs/quick-story-definition/quick-story-spec",
+        "custom_message": ""
+      },
+      "custom_messages": [
+        {
+          "step": "*",
+          "trigger": "capability",
+          "message": "Use {{$.description}} and {{$.requirements}} as request for defining this story"
+        }
+      ],
+      "produces": [
+        "quick_story_output_path",
+        "story_readiness",
+        "story_type_resolved"
+      ],
+      "consumes": [],
+      "concurrent_streams": 1,
+      "scope_axis": null
+    },
+    {
+      "name": "quick-change-implementation",
+      "session_id": "qci-001",
+      "sdlc_phase": "development",
+      "has_review_verdict": false,
+      "init_params": {
+        "project_name": "project",
+        "quick_story_path": "$PROJECT_DIR/artifacts/outputs/quick-story-definition/quick-story-spec",
+        "source_path": "$PROJECT_DIR/source",
+        "context_pack_path": "$PROJECT_DIR/context-pack",
+        "feature_id": "",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/quick-change-implementation",
+        "quick_change_output_folder": "quick-change-spec",
+        "quick_change_output_path": "$PROJECT_DIR/artifacts/outputs/quick-change-implementation/quick-change-spec",
+        "skip_runtime_validation": false,
+        "custom_message": ""
+      },
+      "produces": [
+        "apply_verdict",
+        "change_verdict",
+        "quick_change_output_path",
+        "source_path"
+      ],
+      "consumes": [
+        "quick_story_output_path",
+        "source_path"
+      ],
+      "concurrent_streams": 1,
+      "scope_axis": null
+    },
+    {
+      "name": "sprint-planning",
+      "session_id": "sprint-planning",
+      "sdlc_phase": "discovery",
+      "has_review_verdict": false,
+      "init_params": {
+        "project_name": "project",
+        "prd_path": "$PROJECT_DIR/artifacts/inputs/PRD.md",
+        "epics_path": "$PROJECT_DIR/artifacts/inputs/epics",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/sprint-planning",
+        "chunking_criteria": "quickchange-scope-tripwire",
+        "max_acceptance_checks_per_chunk": "7",
+        "max_sub_goals": "20",
+        "sub_goal_decomposition_path": "SUB-GOAL-DECOMPOSITION-{SESSION_ID}.json",
+        "failure_feedback": ""
+      },
+      "custom_messages": [
+        {
+          "step": "*",
+          "trigger": "capability",
+          "message": "Use as input the described documents"
+        }
+      ],
+      "produces": [
+        "decomposition_gate_decision",
+        "sub_goal_decomposition_path"
+      ]
+    },
+    {
+      "name": "local-runtime-validation",
+      "session_id": "local-runtime-validation",
+      "sdlc_phase": "development",
+      "has_review_verdict": false,
+      "init_params": {
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/local-runtime-validation",
+        "project_name": "project",
+        "source_path": "$PROJECT_DIR/source",
+        "dtr_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/dtr*.md",
+        "discovery_package_path": "$PROJECT_DIR/artifacts/outputs/prototype-reverse-engineering",
+        "validated_test_cases_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-web-automation/validated-test-cases",
+        "launch_targets": "auto",
+        "application_urls": "",
+        "monorepo_strategy": "auto",
+        "smoke_mode": "auto",
+        "db_strategy": "auto",
+        "max_routes": 15,
+        "max_probe_seconds": 120,
+        "viewports": "desktop:1440x900,mobile:375x667",
+        "max_fix_retries": 2,
+        "cleanup_services": true,
+        "teardown_grace_seconds": 5,
+        "teardown_output_folder": "teardown",
+        "teardown_output_path": "teardown",
+        "auth_headers_path": "",
+        "bootstrap_output_folder": "bootstrap",
+        "bootstrap_output_path": "bootstrap",
+        "launch_output_folder": "launch",
+        "launch_output_path": "launch",
+        "smoke_output_folder": "smoke",
+        "smoke_output_path": "smoke",
+        "consolidated_errors_filename": "consolidated-errors.json",
+        "consolidated_errors_path": "consolidated-errors.json",
+        "quality_criteria_path": "criteria/local-runtime-validation-criteria.md"
+      },
+      "produces": [
+        "api_errors_path",
+        "api_status",
+        "boot_errors_aggregate",
+        "bootstrap_spec_path",
+        "browser_errors_path",
+        "browser_status",
+        "consolidated_errors_path",
+        "env_blockers",
+        "env_file_path",
+        "env_status",
+        "error_count_fatal_high",
+        "error_count_total",
+        "launch_spec_path",
+        "launch_status",
+        "runtime_info_path",
+        "runtime_status",
+        "runtime_validation_feedback",
+        "services_json",
+        "services_killed_count",
+        "services_running",
+        "services_skipped_count",
+        "smoke_route_inventory",
+        "smoke_spec_path",
+        "teardown_spec_path",
+        "teardown_status"
+      ],
+      "consumes": [
+        "source_path"
+      ]
+    },
+    {
+      "name": "static-security-analysis",
+      "session_id": "static-security-analysis",
+      "sdlc_phase": "testing",
+      "has_review_verdict": false,
+      "init_params": {
+        "project_name": "project",
+        "intake_contract_path": "",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/static-security-analysis",
+        "repos_path": "$PROJECT_DIR/artifacts/work/repos",
+        "staticanalyzer_api_base": "",
+        "model_policy_defaults_path": "",
+        "enabled_tools": "",
+        "enable_deep_secrets": false,
+        "enable_iac": false,
+        "diagram_path": "",
+        "custom_message": "",
+        "validated_intake_package_path": "intake-package",
+        "consolidated_raw_findings_path": "findings",
+        "service_dependency_graph_path": "service-graph"
+      },
+      "produces": [
+        "analysis_review_decision",
+        "consolidated_raw_findings_path",
+        "graph_status",
+        "intake_status",
+        "scan_status",
+        "scope_authorization_decision",
+        "service_dependency_graph_path",
+        "validated_intake_package_path"
+      ]
+    },
+    {
+      "name": "code-development-autoloop",
+      "session_id": "code-development-autoloop",
+      "sdlc_phase": "development",
+      "has_review_verdict": true,
+      "init_params": {
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/code-development-autoloop",
+        "source_path": "$PROJECT_DIR/source",
+        "project_name": "project",
+        "feature_id": "$.title",
+        "scope_type": "code-development",
+        "task_description_path": "$PROJECT_DIR/artifacts/inputs/task-description.md",
+        "prd_path": "$PROJECT_DIR/artifacts/inputs/PRD.md",
+        "epics_path": "$PROJECT_DIR/artifacts/inputs/epics",
+        "user_stories_path": "$PROJECT_DIR/artifacts/outputs/product-delivery/user-stories",
+        "test_cases_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-design{% if feature_id %}/{{feature_id}}{% endif %}/test-cases",
+        "target_architecture": "$PROJECT_DIR/artifacts/outputs/software-architecture/target-architecture",
+        "adr_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/adrs",
+        "domain_boundaries_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/domain-boundaries",
+        "research_output_folder": "research-output",
+        "research_output_path": "research-output",
+        "planning_output_folder": "code-task-planning",
+        "planning_output_path": "code-task-planning",
+        "conformance_findings_path": "",
+        "verification_report_path": "",
+        "quality_criteria_path": "criteria/local-runtime-validation-criteria.md",
+        "impl_output_folder": "implementation",
+        "impl_output_path": "implementation",
+        "review_output_folder": "code-review-output",
+        "review_output_path": "code-review-output",
+        "projects_inventory": "./context-pack/project-inventory.md",
+        "stack_trace": "",
+        "design_specs_path": "",
+        "design_images_path": "",
+        "api_contract_path": "",
+        "custom_message": "",
+        "triage_output_folder": "triage-report",
+        "triage_output_path": "triage-report",
+        "repository_cache_path": "$PROJECT_DIR/artifacts/outputs/code-development/repositories",
+        "skip_runtime_validation": false,
+        "research_depth": "",
+        "review_scope": "",
+        "review_context_limit": ""
+      },
+      "produces": [
+        "blocker_count",
+        "blocking_count",
+        "conformance_findings_path",
+        "conformance_verdict",
+        "failed_blocker_count",
+        "high_count",
+        "impl_output_path",
+        "planning_output_path",
+        "research_output_path",
+        "review_feedback",
+        "review_output_path",
+        "review_status",
+        "source_path",
+        "verification_report_path",
+        "verification_verdict"
+      ],
+      "consumes": [
+        "source_path"
+      ]
+    },
+    {
+      "name": "mcp-tools-development",
+      "session_id": "mcp-tools-development",
+      "sdlc_phase": "development",
+      "has_review_verdict": true,
+      "init_params": {
+        "detailed_agent_design_path": "",
+        "platform_blueprint_path": "",
+        "api_contracts_path": "",
+        "output_path": "",
+        "source_path": "$PROJECT_DIR/source",
+        "failure_feedback": ""
+      },
+      "produces": [
+        "api_research_report_path",
+        "contract_validation_path",
+        "integrations_code_path",
+        "mcp_publication_gate_decision",
+        "mcp_tools_published_path",
+        "publication_report_path",
+        "review_status",
+        "tool_mocks_path"
+      ],
+      "consumes": [
+        "source_path"
+      ]
+    },
+    {
+      "name": "quality-engineering-design",
+      "session_id": "quality-engineering-design",
+      "sdlc_phase": "testing",
+      "has_review_verdict": false,
+      "init_params": {
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/quality-engineering-design",
+        "feature_id": "$.title",
+        "project_name": "project",
+        "prd_path": "$PROJECT_DIR/artifacts/inputs/PRD.md",
+        "epics_path": "$PROJECT_DIR/artifacts/inputs/epics",
+        "adrs_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/adrs",
+        "user_stories_path": "$PROJECT_DIR/artifacts/outputs/product-delivery/user-stories",
+        "test_strategy_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-planning/qa-test-strategy",
+        "master_test_plan_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-planning/qa-master-test-plan",
+        "failure_feedback": "",
+        "test_cases_output_folder": "test-cases",
+        "test_cases_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-design{% if feature_id %}/{{feature_id}}{% endif %}/test-cases",
+        "artifacts_path": "{{output_folder}}{% if feature_id %}/{{feature_id}}{% endif %}/{{test_cases_output_folder}}",
+        "quality_criteria_path": "criteria/local-runtime-validation-criteria.md"
+      },
+      "produces": [
+        "test_cases_path"
+      ]
+    },
+    {
+      "name": "quality-engineering-planning",
+      "session_id": "quality-engineering-planning",
+      "sdlc_phase": "testing",
+      "has_review_verdict": false,
+      "init_params": {
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/quality-engineering-planning",
+        "project_name": "project",
+        "prd_path": "$PROJECT_DIR/artifacts/inputs/PRD.md",
+        "epics_path": "$PROJECT_DIR/artifacts/inputs/epics",
+        "domain_boundaries_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/domain-boundaries",
+        "adrs_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/adrs",
+        "target_architecture_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/target-architecture",
+        "user_stories_path": "$PROJECT_DIR/artifacts/outputs/product-delivery/user-stories",
+        "test_strategy_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-planning/qa-test-strategy",
+        "master_test_plan_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-planning/qa-master-test-plan",
+        "e2e_tc_path": "$PROJECT_DIR/artifacts/outputs/quality-engineering-planning/e2e-test-cases",
+        "criteria_base_path": "./criteria",
+        "artifacts_path": "{{output_folder}}{% if feature_id %}/{{feature_id}}{% endif %}/{{test_cases_output_folder}}",
+        "quality_criteria_path": "criteria/local-runtime-validation-criteria.md"
+      },
+      "produces": [
+        "e2e_tc_path",
+        "master_test_plan_path",
+        "test_strategy_path"
+      ]
+    },
+    {
+      "name": "product-definition",
+      "session_id": "product-definition",
+      "sdlc_phase": "discovery",
+      "has_review_verdict": false,
+      "init_params": {
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/product-definition",
+        "project_brief": "project-brief.md",
+        "project_name": "project",
+        "meeting_recording": "meetings",
+        "transcript_output": "transcripts",
+        "prd_template": "prd_template.md",
+        "legacy_docs_path": "$PROJECT_DIR/artifacts/outputs/legacy-insights",
+        "epics_output_path": "$PROJECT_DIR/artifacts/outputs/product-definition/epics",
+        "prd_output_path": "$PROJECT_DIR/artifacts/outputs/product-definition/prd",
+        "artifacts_path": "{{output_folder}}{% if feature_id %}/{{feature_id}}{% endif %}/{{test_cases_output_folder}}",
+        "quality_criteria_path": "criteria/local-runtime-validation-criteria.md"
+      },
+      "produces": [
+        "epics_output_path",
+        "prd_output_path"
+      ]
+    },
+    {
+      "name": "product-delivery",
+      "session_id": "product-delivery",
+      "sdlc_phase": "development",
+      "has_review_verdict": false,
+      "init_params": {
+        "project_name": "project",
+        "delivery_platform": "csv-file",
+        "servicenow_hierarchy_mode": "epic_story",
+        "export_scope": "all",
+        "selected_epics": "",
+        "selected_stories": "",
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/product-delivery",
+        "feature_id": "$.title",
+        "epics_input_path": "$PROJECT_DIR/artifacts/outputs/product-definition/epics",
+        "prd_input_path": "$PROJECT_DIR/artifacts/outputs/product-definition/prd",
+        "target_architecture_input_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/target-architecture",
+        "adr_input_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/adrs",
+        "dtr_input_path": "$PROJECT_DIR/artifacts/outputs/software-architecture/dtr",
+        "meeting_recording_path": "",
+        "transcript_output_path": "$PROJECT_DIR/artifacts/inputs/transcripts",
+        "quality_criteria_path": "criteria/local-runtime-validation-criteria.md",
+        "artifacts_path": "{{output_folder}}{% if feature_id %}/{{feature_id}}{% endif %}/{{test_cases_output_folder}}",
+        "user_stories_output_folder": "user-stories",
+        "user_stories_output_path": "user-stories",
+        "platform_export_output_folder": "platform-export",
+        "platform_export_output_path": "platform-export",
+        "compliance_output_folder": "architecture-compliance",
+        "compliance_output_path": "architecture-compliance",
+        "story_scope": "all"
+      },
+      "produces": [
+        "approve_count",
+        "compliance_feedback",
+        "compliance_output_path",
+        "compliance_path",
+        "compliance_route",
+        "compliance_status",
+        "initiate_adr_count",
+        "platform_export_output_path",
+        "return_to_product_count",
+        "user_stories_output_path"
+      ],
+      "consumes": [
+        "epics_output_path",
+        "prd_output_path"
+      ]
+    },
+    {
+      "name": "software-architecture",
+      "session_id": "software-architecture",
+      "sdlc_phase": "discovery",
+      "has_review_verdict": false,
+      "init_params": {
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/software-architecture",
+        "project_name": "project",
+        "current_architecture": "current-architecture.md",
+        "technical_interview": "transcripts/tech-transcript.md",
+        "meeting_recording": "meetings",
+        "prd_path": "$PROJECT_DIR/artifacts/outputs/product-definition/prd",
+        "epics_path": "$PROJECT_DIR/artifacts/outputs/product-definition/epics",
+        "domain_boundaries": "domain-boundaries",
+        "adrs": "adrs",
+        "tech_stack": "tech-stack",
+        "target_architecture": "$PROJECT_DIR/artifacts/outputs/software-architecture/target-architecture",
+        "dtr_mode": "brownfield",
+        "project_brief_path": "",
+        "dtr_source_path": "",
+        "dtr": "dtr",
+        "derive_validation_tools": true,
+        "validation_tools_output_path": "./context-pack"
+      },
+      "produces": [
+        "adrs_path",
+        "domain_boundaries_path",
+        "dtr_path",
+        "target_architecture_path",
+        "validation_tools_path"
+      ],
+      "consumes": [
+        "epics_output_path",
+        "prd_output_path"
+      ]
+    },
+    {
+      "name": "software-architecture-autoloop",
+      "session_id": "software-architecture-autoloop",
+      "sdlc_phase": "discovery",
+      "has_review_verdict": false,
+      "init_params": {
+        "input_folder": "$PROJECT_DIR/artifacts/inputs",
+        "output_folder": "$PROJECT_DIR/artifacts/outputs/software-architecture-autoloop",
+        "project_name": "project",
+        "current_architecture": "current-architecture.md",
+        "technical_interview": "transcripts/tech-transcript.md",
+        "meeting_recording": "meetings",
+        "prd_path": "$PROJECT_DIR/artifacts/outputs/product-definition/prd",
+        "epics_path": "$PROJECT_DIR/artifacts/outputs/product-definition/epics",
+        "domain_boundaries": "$PROJECT_DIR/artifacts/outputs/software-architecture/domain-boundaries",
+        "adrs": "$PROJECT_DIR/artifacts/outputs/software-architecture/adrs",
+        "tech_stack": "tech-stack",
+        "target_architecture": "$PROJECT_DIR/artifacts/outputs/software-architecture/target-architecture",
+        "dtr_mode": "brownfield",
+        "project_brief_path": "",
+        "dtr_source_path": "",
+        "dtr": "$PROJECT_DIR/artifacts/outputs/software-architecture/dtr",
+        "derive_validation_tools": true,
+        "validation_tools_output_path": "./context-pack"
+      },
+      "produces": [
+        "adr_blocker_count",
+        "adr_conformance_findings_path",
+        "adr_conformance_verdict",
+        "adr_failed_blocker_count",
+        "adr_verification_report_path",
+        "adr_verification_verdict",
+        "adrs_path",
+        "bc_failed_blocker_count",
+        "bc_verification_report_path",
+        "bc_verification_verdict",
+        "domain_boundaries_path",
+        "dtr_blocker_count",
+        "dtr_conformance_findings_path",
+        "dtr_conformance_verdict",
+        "dtr_failed_blocker_count",
+        "dtr_path",
+        "dtr_verification_report_path",
+        "dtr_verification_verdict",
+        "foundation_failed_blocker_count",
+        "foundation_verification_report_path",
+        "foundation_verification_verdict",
+        "spec_failed_blocker_count",
+        "spec_verification_report_path",
+        "spec_verification_verdict",
+        "target_architecture_path",
+        "validation_tools_path"
+      ],
+      "consumes": [
+        "epics_output_path",
+        "prd_output_path",
+        "validation_tools_path"
+      ]
+    }
+  ],
+  "capability_groups": [
+    {
+      "id": "group",
+      "display_name": "Small Feature Implementation ",
+      "loop": true,
+      "loop_source_artifact": "sub_goal_decomposition_path",
+      "capabilities": [
+        "quick-story-definition",
+        "quick-change-implementation"
+      ],
+      "iterator_param_map": {}
+    }
+  ],
+  "signal_nodes": [
+    {
+      "id": "signal-skip",
+      "action": "skip_iteration"
+    },
+    {
+      "id": "signal-skip-2",
+      "action": "skip_iteration"
+    }
+  ],
+  "skipped_capabilities": [],
+  "execution_phases": [
+    {
+      "phase": 1,
+      "capabilities": [
+        "sprint-planning",
+        "static-security-analysis",
+        "code-development-autoloop",
+        "mcp-tools-development",
+        "quality-engineering-design",
+        "quality-engineering-planning",
+        "product-definition",
+        "product-delivery",
+        "software-architecture",
+        "software-architecture-autoloop"
+      ],
+      "prerequisite_artifacts": []
+    },
+    {
+      "phase": 2,
+      "capabilities": [
+        "quick-story-definition"
+      ],
+      "prerequisite_artifacts": []
+    },
+    {
+      "phase": 3,
+      "capabilities": [
+        "quick-change-implementation"
+      ],
+      "prerequisite_artifacts": []
+    },
+    {
+      "phase": 4,
+      "capabilities": [
+        "local-runtime-validation"
+      ],
+      "prerequisite_artifacts": []
+    }
+  ],
+  "dag": {
+    "unlock_chain": [
+      {
+        "artifact": "quick-story-definition-COMPLETED",
+        "produced_by": "quick-story-definition",
+        "unlocks": [
+          "signal-skip"
+        ],
+        "dependency_type": "required",
+        "otherwise": true
+      },
+      {
+        "artifact": "quick-change-implementation-COMPLETED",
+        "produced_by": "quick-change-implementation",
+        "unlocks": [
+          "signal-skip-2"
+        ],
+        "dependency_type": "required",
+        "condition": "apply_verdict != \"APPLIED_VERIFIED\" && apply_verdict != \"APPLIED_UNVERIFIED\""
+      },
+      {
+        "artifact": "quick_story_output_path",
+        "produced_by": "quick-story-definition",
+        "available_after": "quick-story-validation",
+        "unlocks": [
+          "quick-change-implementation"
+        ],
+        "dependency_type": "required",
+        "condition": "story_readiness == \"READY_FOR_QUICK_CHANGE\""
+      },
+      {
+        "artifact": "sprint-planning-COMPLETED",
+        "produced_by": "sprint-planning",
+        "unlocks": [
+          "quick-story-definition"
+        ],
+        "dependency_type": "required"
+      },
+      {
+        "artifact": "quick-change-implementation-COMPLETED",
+        "produced_by": "quick-change-implementation",
+        "unlocks": [
+          "local-runtime-validation"
+        ],
+        "dependency_type": "required"
+      }
+    ],
+    "parallel_windows": [],
+    "critical_path": [
+      "sprint-planning",
+      "static-security-analysis",
+      "code-development-autoloop",
+      "mcp-tools-development",
+      "quality-engineering-design",
+      "quality-engineering-planning",
+      "product-definition",
+      "product-delivery",
+      "software-architecture",
+      "software-architecture-autoloop",
+      "quick-story-definition",
+      "quick-change-implementation",
+      "local-runtime-validation"
+    ]
+  },
+  "scope_commitments": [],
+  "step_execution_messages": [
+    {
+      "capability": "quick-story-definition",
+      "step_id": "define-quick-story",
+      "message": "Create a feature story for a small localized enhancement. If the request is not small enough for quick-change, emit an escalation readiness verdict instead of expanding scope.",
+      "source": "playlist-template",
+      "optional": false
+    },
+    {
+      "capability": "quick-change-implementation",
+      "step_id": "plan-change",
+      "message": "Plan only one small localized feature/enhancement from the quick story. Do not edit source in PLAN mode; escalate if the quick envelope is exceeded.",
+      "source": "playlist-template",
+      "optional": false
+    },
+    {
+      "capability": "quick-change-implementation",
+      "step_id": "apply-change",
+      "message": "Apply only the approved quick-change plan, add or update focused tests when feasible, and record validation evidence.",
+      "source": "playlist-template",
+      "optional": false
+    }
+  ],
+  "quality_gate_policy": {
+    "standard": "Poll session status --json every 60s. Gate approved via Stepwise UI."
+  },
+  "feed_in_artifacts": [
+    {
+      "capability": "quick-change-implementation",
+      "artifact": "quick_story_output_path",
+      "producer": "quick-story-definition",
+      "target_step": "plan-change",
+      "dependency_type": "required"
+    }
+  ]
+}

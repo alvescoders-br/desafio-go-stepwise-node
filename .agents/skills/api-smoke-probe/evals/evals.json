@@ -1,0 +1,29 @@
+{
+  "skill_name": "api-smoke-probe",
+  "evals": [
+    {
+      "id": 1,
+      "name": "happy-path-fastapi-with-openapi",
+      "prompt": "Smoke-probe the FastAPI service at runtime_url from /Users/me/Documents/globai-projects/calcservice/artifacts/outputs/runtime-validation/runtime_info.json. The service exposes /openapi.json. Write outputs to /Users/me/Documents/globai-projects/calcservice/artifacts/outputs/runtime-validation/. project_name=calc-service. Cap at 20 routes, 60 seconds.",
+      "expected_output": "Step 1 reads runtime_info.json (launch_status=RUNNING). Phase A discovers OpenAPI at runtime_url/openapi.json → parses paths and methods → route_plan populated. Common-probe routes (/health, /, /metrics) appended. Phase B scans runtime.log for boot errors (none in happy path), then probes each route with curl. All return 200, no schema drift. api_errors.json has zero errors. api_status=PASS.",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "fail-500-on-documented-route-and-boot-import-error",
+      "prompt": "Same FastAPI service, but: (1) GET /api/students returns 500 because of an unhandled exception, (2) runtime.log contains 'ImportError: No module named redis' from startup, (3) GET /api/courses returns 200 but with body '{\"data\": []}' when OpenAPI declares required field 'pagination'. Smoke-probe with the same parameters as eval 1.",
+      "expected_output": "Phase B detects: detector=http_error severity=fatal on GET /api/students (500); detector=boot_log_error severity=fatal route=<startup> for the redis ImportError; detector=schema_drift severity=medium on GET /api/courses (missing required field 'pagination'). api_errors.json sorted fatal first. api_status=FAIL. suggested_root_cause for each error is concrete (e.g. ImportError → 'missing dependency, check package install'). The runtime-validation gate can consume api_errors.json verbatim as failure_feedback to code-development(scope_type=bug-fixing).",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "repair-after-redis-install-bootlog-rerun",
+      "prompt": "REPAIR the smoke at /Users/me/Documents/globai-projects/calcservice/artifacts/outputs/runtime-validation/. The bug-fix loop added 'redis' to requirements.txt and re-ran bootstrapping-runtime-environment + launching-app — runtime.log no longer contains the ImportError. failure_feedback: 'target: boot-log — re-scan the boot log only; http and schema_drift detectors are unchanged'.",
+      "expected_output": "Same SESSION_ID reused. Phase A skipped (route_plan from PRIOR_SMOKE). Phase B re-scans runtime.log only (no route re-probe). New boot_log_errors[] is empty. api_errors recomputed: boot_log_error entry removed; http_error (500 on /api/students) and schema_drift entries preserved from PRIOR_SMOKE. api_status remains FAIL because the 500 is still there. api_errors.json overwritten. API-SMOKE-SPEC rewritten in place. API-SMOKE-AUDIT gets '## Repair Pass 1' section.",
+      "mode": "repair",
+      "files": []
+    }
+  ]
+}

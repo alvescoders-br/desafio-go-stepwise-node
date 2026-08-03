@@ -1,0 +1,29 @@
+{
+  "skill_name": "tearing-down-services",
+  "evals": [
+    {
+      "id": 1,
+      "name": "happy-path-stop-spawned-web-skip-reused-api",
+      "prompt": "Tear down the services described in /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/local-runtime-validation/educational_system/launch/runtime_info.json. Write the report to /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/local-runtime-validation/educational_system/teardown/. project_name=educational_system. grace_seconds=5.",
+      "expected_output": "Reads runtime_info.json (schema v2.0). Phase A classifies: api as 'reused_existing' (reused_existing=true), web as a target (pid=98093, RUNNING). Phase B sends SIGTERM to pid 98093, waits up to 5s for graceful exit. Process exits within grace → final_state=TERMINATED with exit_after_ms recorded. teardown_status=CLEAN. TEARDOWN-SPEC shows 1 target, 1 skipped, 1 action. Section 3 lists api with reason=reused_existing. No signal sent to pid 96344 (the reused API).",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "fail-zombie-needs-sigkill",
+      "prompt": "Same as eval 1 but the web service has a broken SIGTERM handler — it ignores SIGTERM and only exits on SIGKILL.",
+      "expected_output": "Phase B sends SIGTERM, polls for 5s without exit, escalates to SIGKILL. Process exits within 1s after SIGKILL → final_state=KILLED with 2 signals_sent entries. stderr_excerpt='process did not respond to SIGTERM within grace'. teardown_status=CLEAN. decisions_log captures the escalation. Open question is NOT raised (KILLED is a known final state, not a blocker).",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "dry-run-validates-targets-without-killing",
+      "prompt": "Tear down with dry_run=true. Same runtime_info.json as eval 1.",
+      "expected_output": "Phase A classifies normally (1 target, 1 skipped). Phase B does NOT send any signals; final_state=DRY_RUN for the web target. teardown_status=CLEAN. Both api and web processes remain alive in the environment after the skill finishes. TEARDOWN-SPEC clearly shows dry_run=true in Section 1 so the operator knows nothing was actually killed.",
+      "mode": "build",
+      "files": []
+    }
+  ]
+}

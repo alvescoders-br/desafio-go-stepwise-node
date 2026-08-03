@@ -1,0 +1,14 @@
+{
+  "skill": "api-smoke-probe",
+  "session_id": "ENGINEERING-APISMOKE-20260515",
+  "status": "COMPLETED",
+  "started_at": "2026-05-15T14:35:00Z",
+  "completed_at": "2026-05-15T14:50:00Z",
+  "total": 3,
+  "completed": 3,
+  "items": [
+    { "phase": "route-discovery", "status": "COMPLETE" },
+    { "phase": "http-probing", "status": "COMPLETE" },
+    { "phase": "report", "status": "COMPLETE" }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "skill": "validating-architecture-compliance",
+  "version": "1.0.0",
+  "tests": [
+    {
+      "id": "EVAL-COMP-001",
+      "name": "Mixed verdict backlog (Approve + Return + ADR)",
+      "mode": "build",
+      "description": "Backlog of 12 stories under 3 epics. Architecture: GCP + Spring Boot + PostgreSQL + Kafka. Expected outcome: 8 approve, 2 return-to-product (ambiguous SLO language), 2 initiate-ADR (one needs Salesforce integration not in stack, one needs a new bounded context).",
+      "inputs": {
+        "project_name": "AcmeCheckout",
+        "user_stories_path": "./fixtures/eval-001/user-stories",
+        "target_architecture_path": "./fixtures/eval-001/target-architecture",
+        "adr_path": "./fixtures/eval-001/adrs",
+        "compliance_output_path": "./out/eval-001/architecture-compliance"
+      },
+      "expected_outputs": [
+        "COMPLIANCE-SPEC-COMP-ACMECHECKOUT-{date}.md exists",
+        "Summary table totals: 12 reviewed, 8 approve, 2 return_to_product, 2 initiate_adr",
+        "Every gap row cites a UNIT/principle/ADR/NFR id from the architecture",
+        "INITIATE_ADR rows describe category-only (e.g., 'CRM API client') — never enumerate specific libraries",
+        "Per-story sections follow Templates 2 / 1a / 1b verbatim from references/output-templates.md"
+      ],
+      "expected_failure": null
+    },
+    {
+      "id": "EVAL-COMP-002",
+      "name": "Story-scope: single epic only",
+      "mode": "build",
+      "description": "Same fixture as EVAL-COMP-001 but story_scope='epic:E-PAYMENTS' restricts evaluation to the 4 stories under E-PAYMENTS. Expect 3 approve, 1 return-to-product, no initiate-ADR.",
+      "inputs": {
+        "project_name": "AcmeCheckout",
+        "user_stories_path": "./fixtures/eval-001/user-stories",
+        "target_architecture_path": "./fixtures/eval-001/target-architecture",
+        "adr_path": "./fixtures/eval-001/adrs",
+        "compliance_output_path": "./out/eval-002/architecture-compliance",
+        "story_scope": "epic:E-PAYMENTS"
+      },
+      "expected_outputs": [
+        "Summary totals: 4 reviewed, 3 approve, 1 return_to_product, 0 initiate_adr",
+        "Stories outside E-PAYMENTS are absent from the COMPLIANCE-SPEC",
+        "AUDIT records story_scope filter applied"
+      ],
+      "expected_failure": null
+    },
+    {
+      "id": "EVAL-COMP-003",
+      "name": "REPAIR: re-evaluate two stories after architecture update",
+      "mode": "repair",
+      "description": "Existing COMPLIANCE-SPEC has US-15 = INITIATE_ADR (needed Salesforce). After ADR-007 was approved adding the Salesforce integration to architecture.units.integrations, the architecture path now includes it. failure_feedback targets US-15 and US-16 for re-evaluation. Expect: US-15 verdict changes to APPROVE (gap resolved by ADR), US-16 unchanged, all other stories preserved verbatim.",
+      "inputs": {
+        "project_name": "AcmeCheckout",
+        "user_stories_path": "./fixtures/eval-003/user-stories",
+        "target_architecture_path": "./fixtures/eval-003/target-architecture",
+        "adr_path": "./fixtures/eval-003/adrs",
+        "compliance_output_path": "./out/eval-003/architecture-compliance",
+        "failure_feedback": "Re-evaluate US-15 and US-16 against the updated architecture. ADR-007 has been approved and added the Salesforce integration. All other stories: preserve verdict and content."
+      },
+      "expected_outputs": [
+        "COMPLIANCE-SPEC version incremented (e.g., 1.0.1)",
+        "US-15 verdict changes from INITIATE_ADR to APPROVE; gap row removed; ADR-007 cited in the audit's CHANGE_LOG",
+        "US-16 section is updated (re-evaluated)",
+        "All other stories: byte-equivalent to PREVIOUS_SPEC content for those sections",
+        "AUDIT records REPAIR_DIRECTIVES applied (US-15, US-16) and stories preserved (count)"
+      ],
+      "expected_failure": null
+    }
+  ]
+}

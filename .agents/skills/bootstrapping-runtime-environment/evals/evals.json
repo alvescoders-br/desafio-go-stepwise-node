@@ -1,0 +1,29 @@
+{
+  "skill_name": "bootstrapping-runtime-environment",
+  "evals": [
+    {
+      "id": 1,
+      "name": "happy-path-nest-prisma-postgres",
+      "prompt": "Bootstrap the local runtime for the NestJS API at /Users/me/Documents/globai-projects/educationalmanagementsystem/source/apps/api. The project uses Prisma with Postgres, ioredis for caching, and has a config.schema.ts declaring AWS_REGION, AUTH_MODE, DATABASE_URL, REDIS_URL, AUTH_ISSUER_URL, AUTH_CLIENT_ID, AUTH_CLIENT_SECRET. A frigorifico-postgres container is already running on port 5432. Write the bootstrap report and .env to /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/. project_name is art-school-management.",
+      "expected_output": "BOOT-SPEC-{SESSION_ID}.md with env_status=READY (all secrets either synthesized or supplied), services_running showing frigorifico-postgres reused (reused=true), a new art-school-management-redis spun up, DATABASE_URL pointing at the reused postgres with a new artschool_dev database created, .env file at output_folder/.env, migrations_applied showing prisma db push exit_code=0, db_ready=true.",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "repair-fix-missing-aws-region",
+      "prompt": "REPAIR the bootstrap at /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/. Previous run produced env_status=BLOCKED because AWS_REGION was placed in env_blockers but the config schema actually accepts a dev default. failure_feedback: 'target: env_keys_synthesized.AWS_REGION — AWS_REGION should be synthesized with default eu-west-1, not blocked. Re-run env synthesis only; do not touch services or migrations.'",
+      "expected_output": "Same SESSION_ID reused (extracted from existing BOOT-SPEC filename). Step 2 (stack), Step 3 (services), and migration runs skipped. Step 4 re-synthesizes env, moves AWS_REGION from env_blockers to env_keys_synthesized with assumption tag. .env file rewritten. BOOT-AUDIT appended with Repair Pass 1 section. env_status recomputed to READY if no other blockers remain.",
+      "mode": "repair",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "api-only-no-frontend-existing-db",
+      "prompt": "Bootstrap the runtime for /Users/me/Documents/globai-projects/CalcService/source. It's a stateless Spring Boot microservice with no database (uses H2 in-memory for testing only). No Prisma, no ORM migrations needed at runtime. project_name=calc-service. Use db_strategy=sqlite-in-memory as an override (the agent should still detect no ORM and skip migrations). Write to /Users/me/Documents/globai-projects/CalcService/artifacts/outputs/runtime-validation/.",
+      "expected_output": "BOOT-SPEC with stack.db_engine=sqlite or none, services_running empty (or sqlite in-memory entry), env_keys_synthesized includes SERVER_PORT and SPRING_PROFILES_ACTIVE=dev. migrations_applied is empty (no ORM detected). db_ready=true (no DB required). env_status=READY. decisions_log notes 'no ORM, no migrations to apply'.",
+      "mode": "build",
+      "files": []
+    }
+  ]
+}

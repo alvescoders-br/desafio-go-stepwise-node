@@ -1,0 +1,29 @@
+{
+  "skill_name": "browser-smoke-probe",
+  "evals": [
+    {
+      "id": 1,
+      "name": "happy-path-react-app",
+      "prompt": "Smoke-probe the React/Vite app at runtime_url from /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/runtime_info.json. Use the discovery package at /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/prototype-reverse-engineering/deliverables/ to seed route list. Write outputs to /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/. project_name=art-school-management. Cap at 8 routes, 120 seconds.",
+      "expected_output": "Reads runtime_info.json (launch_status=RUNNING). Detects playwright MCP. Seeds routes from discovery (e.g. /, /login, /dashboard, /students, /courses). Probes each in desktop + mobile viewports. Captures per-route detectors. browser_errors.json with no fatal/high entries when the app is clean → browser_status=PASS. Screenshots saved. smoke_route_inventory populated for downstream QE.",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "fail-redirect-loop-and-missing-postcss",
+      "prompt": "Smoke-probe the same React app, but the build is broken: /login redirects to itself in a loop AND postcss.config.js is missing so Tailwind directives aren't compiled. Routes from operator: ['/', '/login?returnUrl=/login', '/dashboard']. Write to /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/.",
+      "expected_output": "Detector 3 (network_anomaly) flags redirect_loop with severity=fatal on /login?returnUrl=/login. Detector 4 (css_sanity) flags css_not_compiled (heuristic 4a) AND styles_not_applied (heuristic 4b) on /. browser_status=FAIL. browser_errors.json sorted fatal→high. suggested_root_cause for each error gives a concrete fix hint. The runtime-validation gate can read browser_errors.json verbatim as failure_feedback to spawn code-development(scope_type=bug-fixing).",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "repair-rerun-after-postcss-fix",
+      "prompt": "REPAIR the smoke at /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/. The postcss.config.js was added by the bug-fix loop. failure_feedback: 'target: detector:css_sanity — re-run the CSS sanity detector across all probed routes; the postcss.config.js fix should resolve css_not_compiled and styles_not_applied. Do not re-probe http or console — those passed last time.'",
+      "expected_output": "Same SESSION_ID reused. Phase A skipped (route_plan preserved from PRIOR_SMOKE). Phase B re-runs only Detector 4 across all routes_probed entries; loads detectors 1, 2, 3, 5 from PRIOR_SMOKE for those routes. Aggregated browser_errors recomputed: css_sanity entries removed, others preserved. If css_sanity now passes, browser_status flips to PASS. browser_errors.json overwritten. BROWSER-SMOKE-SPEC rewritten in place; BROWSER-SMOKE-AUDIT gets a '## Repair Pass 1' section.",
+      "mode": "repair",
+      "files": []
+    }
+  ]
+}

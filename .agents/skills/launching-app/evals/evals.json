@@ -1,0 +1,29 @@
+{
+  "skill_name": "launching-app",
+  "evals": [
+    {
+      "id": 1,
+      "name": "happy-path-nest-start-dev",
+      "prompt": "Launch the NestJS API at /Users/me/Documents/globai-projects/educationalmanagementsystem/source/apps/api using the .env at /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/.env. Probe /health every few seconds for up to 60s. Write LAUNCH-SPEC and runtime_info.json to the same artifacts/outputs/runtime-validation folder. project_name=art-school-management.",
+      "expected_output": "Detects 'npm run start:dev' from package.json. Spawns background process, captures pid. Discovers port 3000 from log line 'Application successfully started'. HTTP GET http://localhost:3000/health returns 200 within 30s. launch_status=RUNNING. runtime_info.json written with pid, port=3000, url=http://localhost:3000, log_path. LAUNCH-SPEC Section 4 final_status=PASS. Process LEFT RUNNING for downstream smoke probes.",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "failed-boot-prisma-schema-drift",
+      "prompt": "Launch the same NestJS API at /Users/me/Documents/globai-projects/educationalmanagementsystem/source/apps/api. The .env exists but the prisma client was generated against an older schema and the service throws 'relation Student does not exist' on first request. Boot will fail within 5s. Write reports to /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/.",
+      "expected_output": "Process spawns then dies within 5s. Tail of runtime.log captures the Prisma error. boot_errors[] includes {category: 'schema_drift', severity: 'fatal', excerpt: 'relation \"Student\" does not exist'}. launch_status=FAILED. runtime_info.json reflects FAILED status with pid=null (or pid of dead process), url still recorded if discoverable. LAUNCH-SPEC Section 5 lists the schema_drift error. The downstream runtime-validation gate can read boot_errors and route to the bug-fix loop.",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "repair-restart-after-fix",
+      "prompt": "REPAIR the launch at /Users/me/Documents/globai-projects/educationalmanagementsystem/artifacts/outputs/runtime-validation/. The previous launch failed because of a prisma schema drift; that has now been fixed by code-development. failure_feedback: 'target: restart — the schema drift fix has been applied. Kill the prior pid if alive, re-launch, re-probe.'",
+      "expected_output": "Same SESSION_ID reused. Step 2 (command detection) re-runs (preserves operator overrides). Step 3 kills the prior pid if alive (kill -0 check then SIGTERM/SIGKILL). Spawns fresh process. Probes /health. This time returns 200 within 15s. launch_status=RUNNING. runtime_info.json overwritten with new pid, same url. LAUNCH-SPEC rewritten in place; LAUNCH-AUDIT gets a new '## Repair Pass 1' section.",
+      "mode": "repair",
+      "files": []
+    }
+  ]
+}

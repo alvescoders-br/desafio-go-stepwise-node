@@ -1,0 +1,14 @@
+{
+  "skill": "browser-smoke-probe",
+  "session_id": "ENGINEERING-BROWSERSMOKE-20260515",
+  "status": "COMPLETED",
+  "started_at": "2026-05-15T14:10:00Z",
+  "completed_at": "2026-05-15T14:30:00Z",
+  "total": 3,
+  "completed": 3,
+  "items": [
+    { "phase": "route-planning", "status": "COMPLETE" },
+    { "phase": "probe-execution", "status": "COMPLETE" },
+    { "phase": "smoke-report", "status": "COMPLETE" }
+  ]
+}

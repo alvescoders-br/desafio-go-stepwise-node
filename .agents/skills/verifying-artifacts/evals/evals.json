@@ -1,0 +1,46 @@
+{
+  "skill_name": "verifying-artifacts",
+  "evals": [
+    {
+      "id": 1,
+      "name": "acceptance-socialmcp-prefix-plan-FAILED",
+      "prompt": "Verify the pre-fix SocialMCP planning artifact against its producer spec and the discovered platform-reality findings. artifact_path=fixtures/socialmcp-conformance/prefix-plan.md ; output_spec_source=.agents/skills/planning-code-tasks/SKILL.md ; conformance_findings_path=fixtures/socialmcp-conformance/expected-findings.json ; judge_samples=5 ; model=cross-family-judge . Write the report under ./verification/.",
+      "expected_output": "VERIFICATION-REPORT with: (i) the invalid Vercel cron '*/100 * * * *' (finding C-cron) entered as a checklist item with verifiability=PROGRAM, a GENERATED self-contained verifier program present under verifiers/ that reads the cron field ranges and returns FAIL (exit non-zero) — NOT a judge guess; (ii) findings B1 (in-process setInterval OAuth refresh), B2 (better-sqlite3 local file), B3 (retired Vercel KV), B4 (stdio/SSE transport) each consumed from conformance_findings_path, inverted into one pass-condition checklist item at weight 100 (BLOCKER), and surfaced as FAILED items citing their source_url; (iii) failed_blocker_count >= 5; (iv) verification_verdict = FAILED. No distractor (TypeScript 5.4, Turborepo, Zod, Pino, Edge Config, region selection, GitHub Actions CI) raised as a false BLOCKER.",
+      "mode": "build",
+      "files": [
+        "fixtures/socialmcp-conformance/prefix-plan.md",
+        "fixtures/socialmcp-conformance/expected-findings.json",
+        ".agents/skills/planning-code-tasks/SKILL.md"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "clean-postfix-plan-PASSED",
+      "skip": true,
+      "skip_reason": "artifact_path references a local production artifact not committed to this repo (globai_SocialMCP post-fix PLAN-SPEC). To run this eval, provide a committed fixture at fixtures/socialmcp-conformance/postfix-plan.md and update artifact_path accordingly.",
+      "prompt": "Verify the corrected (post-fix) SocialMCP planning artifact. artifact_path=fixtures/socialmcp-conformance/postfix-plan.md ; output_spec_source=.agents/skills/planning-code-tasks/SKILL.md ; conformance_findings_path=fixtures/socialmcp-conformance/expected-findings.json ; judge_samples=5 ; model=cross-family-judge . Write the report under ./verification-postfix/.",
+      "expected_output": "VERIFICATION-REPORT where the cron PROGRAM verifier runs against the corrected '*/30 * * * *' schedule and returns PASS (exit 0); the B1-B4 inverted CONFORMANCE items score as PASS because the corrected plan uses Vercel Cron, Turso/libSQL, Streamable HTTP via mcp-handler, and Upstash Redis; failed_blocker_count = 0; verification_verdict = PASSED or PASSED_WITH_FINDINGS with NO false BLOCKERs.",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "repair-recompute-verdict-after-fixed-cron",
+      "prompt": "A prior verifying-artifacts run on the SocialMCP prefix plan exists at ./verification/ (session VERIFY-SOCIALMCP-...). The producer applied the cron fix (now '*/30 * * * *') but the report still shows the cron item FAILED and verdict FAILED. Re-run in REPAIR mode. failure_feedback='Re-score CHK item for finding C-cron: the artifact cron is now */30 */* * * (valid). Regenerate the cron verifier if needed, re-run it, and recompute the weighted total and verdict from the updated scores. Leave B1-B4 items and all SPEC items untouched.' output_path=./verification/ .",
+      "expected_output": "REPAIR run that: loads the existing VERIFICATION-REPORT (no new folder), regenerates/re-runs ONLY the cron PROGRAM verifier (now PASS), recomputes weighted_total and failed_blocker_count from the current item scores, preserves all untargeted SPEC and B1-B4 items verbatim, bumps the report version (semver patch), and appends a Repair History entry to the audit. If B1-B4 remain failed the verdict stays FAILED; if they were also fixed, the verdict updates accordingly. No full regeneration of the checklist.",
+      "mode": "repair",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "reduced-coverage-no-conformance-findings",
+      "prompt": "Verify a generated implementation plan with NO upstream discovery step available. artifact_path=fixtures/socialmcp-conformance/prefix-plan.md ; output_spec_source=.agents/skills/planning-code-tasks/SKILL.md ; judge_samples=3 . (conformance_findings_path intentionally omitted.) Write the report under ./verification-nofindings/.",
+      "expected_output": "VERIFICATION-REPORT built from SPEC items + the single anti-gaming item only (no CONFORMANCE items). The cron item may still surface as a SPEC-derived PROGRAM item and flag C-cron deterministically, but B1-B4 platform-reality items are ABSENT by construction. run_metadata and findings carry reduced_coverage: true with the explicit note that the verdict is blind to platform-reality items. Verdict reflects spec items only.",
+      "mode": "build",
+      "files": [
+        "fixtures/socialmcp-conformance/prefix-plan.md",
+        ".agents/skills/planning-code-tasks/SKILL.md"
+      ]
+    }
+  ]
+}

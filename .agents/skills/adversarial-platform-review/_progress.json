@@ -1,0 +1,13 @@
+{ "skill": "engineering-skills", "session_id": "ENGINEERING-ADVERSARIALPLATFORMREVIEW-20260622",
+  "status": "COMPLETED", "started_at": "2026-06-22T00:00:00Z", "completed_at": "2026-06-22T00:30:00Z",
+  "total": 8, "completed": 8,
+  "items": [
+    { "id": "SKILL.md", "status": "COMPLETE", "file": "SKILL.md" },
+    { "id": "phase-a-decision-extraction.md", "status": "COMPLETE", "file": "references/phase-a-decision-extraction.md" },
+    { "id": "phase-b-adversarial-verification.md", "status": "COMPLETE", "file": "references/phase-b-adversarial-verification.md" },
+    { "id": "phase-c-findings-emission.md", "status": "COMPLETE", "file": "references/phase-c-findings-emission.md" },
+    { "id": "phase-d-verdict-and-sidecar.md", "status": "COMPLETE", "file": "references/phase-d-verdict-and-sidecar.md" },
+    { "id": "evals.json", "status": "COMPLETE", "file": "evals/evals.json" },
+    { "id": "ENGINEERING-AUDIT.md", "status": "COMPLETE", "file": "ENGINEERING-AUDIT-ENGINEERING-ADVERSARIALPLATFORMREVIEW-20260622.md" },
+    { "id": "registry-updates", "status": "COMPLETE", "file": "context-pack/execution-protocol.md" }
+  ] }

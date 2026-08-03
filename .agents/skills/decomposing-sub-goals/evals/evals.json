@@ -1,0 +1,45 @@
+{
+  "evals": [
+    {
+      "name": "epics_grouped_into_sprint_chunks",
+      "prompt": "Decompose the approved PRD at ./artifacts/outputs/product-definition/PRD.md and the epics at ./artifacts/outputs/product-delivery/epics/ into sub-goals for the dev-cycle iteration group. project_name=Acme-Portal.",
+      "expected": [
+        "writes ./artifacts/outputs/sprint-planning/SUB-GOAL-DECOMPOSITION-{SESSION_ID}.json (SESSION_ID-stamped) validating against the SUB_GOAL_DECOMPOSITION schema, and reports that exact path as sub_goal_decomposition_path in the sidecar",
+        "small related epics are grouped so each sub-goal chunk stays within the autoloop scope tripwire (SCORE <= 30 and NOT (US>3 AND BC>1))",
+        "sub_goals array is ordered by dependency then PRD priority; index is the iteration order",
+        "each item has a unique non-empty title <= 255 chars; description cites every grouped epic id",
+        "no key other than title/description/requirements appears on any sub_goal (additionalProperties:false)"
+      ]
+    },
+    {
+      "name": "oversized_epic_split_into_slices",
+      "prompt": "Decompose PRD ./inputs/PRD.md + epics ./inputs/epics.md where EPIC-004 alone has 9 user stories across 3 bounded contexts. project_name=Big-Bang. max_sub_goals=20.",
+      "expected": [
+        "EPIC-004 is split into ordered independently-implementable slices, each within the tripwire envelope (prefer one bounded context and <= 3 user stories per slice)",
+        "no slice depends on a later slice; if a clean split is impossible the sub_goal is marked pending and the risk is logged in open_questions",
+        "the audit records the per-chunk score and the split rationale",
+        "final sub_goals count <= min(max_sub_goals, 20)"
+      ]
+    },
+    {
+      "name": "quickchange_tripwire_slices_to_quick_lane",
+      "prompt": "Decompose PRD ./inputs/PRD.md + epics ./inputs/epics.md into quick-change-sized sub-goals. project_name=Acme-Portal. chunking_criteria=quickchange-scope-tripwire. max_acceptance_checks_per_chunk=7.",
+      "expected": [
+        "epics are SLICED DOWN (never grouped) — each sub-goal is exactly ONE independently-shippable, user-visible behaviour change sized to the quick-change envelope (acceptance criteria <= 7 checks, single bounded context, no schema/arch/auth work)",
+        "a behaviour whose acceptance criteria exceed the ceiling is split into independently-shippable slices, each quick-change-sized; behaviours are never invented to manufacture small stories",
+        "a genuinely heavy unit (schema/auth/architecture/cross-service) is emitted as its smallest independently-shippable sub-goal and NOT fragmented below shippability — it routes to the heavy lane at run time",
+        "sub_goals ordered by dependency then priority; count <= min(max_sub_goals, 20) with any overflow logged to open_questions, not dropped"
+      ]
+    },
+    {
+      "name": "repair_rechunk_only_targeted_span",
+      "prompt": "REPAIR the decomposition at ./artifacts/outputs/sprint-planning/ — failure_feedback: 'chunk 2 is too large, split it; leave the other chunks alone.'",
+      "expected": [
+        "reuses the SESSION_ID from the existing AUDIT filename and loads THAT session's SUB-GOAL-DECOMPOSITION-{SESSION_ID}.json (matched by the reused SESSION_ID, not merely the newest JSON in the folder)",
+        "re-chunks only chunk 2; every untargeted sub-goal is preserved verbatim (same title, same order)",
+        "rewrites the same SESSION_ID-stamped SUB-GOAL-DECOMPOSITION-{SESSION_ID}.json in place (never a fixed un-stamped filename, never a sibling instance's file)",
+        "audit version is bumped and a ## Repair History entry is appended"
+      ]
+    }
+  ]
+}

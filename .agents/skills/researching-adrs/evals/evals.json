@@ -1,0 +1,29 @@
+{
+  "skill_name": "researching-adrs",
+  "evals": [
+    {
+      "id": 1,
+      "name": "greenfield-microservices-build",
+      "prompt": "Generate ADRs for the HealthTrack patient management platform. PRD is at ./artifacts/outputs/product-definition/PRD-SPEC-20260401.md, domain boundaries at ./artifacts/outputs/software-architecture/domain-boundaries/BC-SPEC-20260403.md, epics at ./artifacts/outputs/product-definition/epics/EPIC-SPEC-20260402.md. Project name is HealthTrack. Output to ./artifacts/outputs/software-architecture/adrs/. The system has 8 bounded contexts (Patient, Appointment, Billing, Auth, Notification, Reporting, Integration, Admin) with 15 NFRs including HIPAA compliance requirements. Context packs are in ./docs/context-pack/.",
+      "expected_output": "ADR-SPEC manifest with 12+ ADRs covering all mandatory categories. Each ADR file uses structured fields (tables, key-value pairs) not prose. Tech stack evaluation matrix with HIPAA-aware governance constraints. All NFR-XX and BC-XX traced. 00-index.md progress tracker. _progress.json set to COMPLETED.",
+      "mode": "build",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "repair-tech-neutrality-violations",
+      "prompt": "The ADR skill ran on the HealthTrack project but the ENGINEERING-AUDIT shows 3 technology neutrality violations: ADR-003 (Service Decomposition) references 'Spring Boot' in its context.forces section instead of capability language, ADR-006 (API Design) mentions 'GraphQL' in consequences instead of 'query language', and ADR-009 (Observability) hardcodes 'Prometheus' in the context section. Apply REPAIR. adrs_path=./artifacts/outputs/software-architecture/adrs/. failure_feedback='REPAIR: Fix technology neutrality violations in ADR-003 (Spring Boot in context.forces), ADR-006 (GraphQL in consequences), ADR-009 (Prometheus in context). Replace with capability language. Do NOT regenerate other ADRs.'",
+      "expected_output": "Only ADR-003, ADR-006, ADR-009 files rewritten in-place with technology names replaced by capability language. Other 9+ ADR files untouched. Manifest NOT regenerated (no directive targets it). Audit file appended with repair_session section listing 3 directives applied.",
+      "mode": "repair",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "chunked-execution-large-project",
+      "prompt": "Generate ADRs for the MegaRetail e-commerce platform with chunk_size=3. First invocation. PRD at ./artifacts/outputs/product-definition/PRD-SPEC-20260410.md, domain boundaries at ./artifacts/outputs/software-architecture/domain-boundaries/BC-SPEC-20260410.md. Project name is MegaRetail. Output to ./artifacts/outputs/software-architecture/adrs/. The project has 14 bounded contexts and 23 NFRs. No context packs. chunk_size=3, resume_from_adr=0.",
+      "expected_output": "Tech stack evaluation completed (Phase A). ADR-001 through ADR-003 generated as structured files. _checkpoint.json written with ADR_INDEX state (3 completed ADRs, technology_eval). 00-index.md shows 3 complete, remaining as TO BE GENERATED. Manifest NOT written (chunk incomplete). Log indicates re-invoke with resume_from_adr=3. _progress.json still RUNNING.",
+      "mode": "build",
+      "files": []
+    }
+  ]
+}

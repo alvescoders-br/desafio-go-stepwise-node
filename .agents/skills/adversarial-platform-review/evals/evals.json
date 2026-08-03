@@ -1,0 +1,47 @@
+{
+  "skill_name": "adversarial-platform-review",
+  "fixture": "fixtures/socialmcp-conformance",
+  "evals": [
+    {
+      "id": 1,
+      "name": "acceptance-prefix-plan-reproduces-B1-B4",
+      "prompt": "Run a platform-conformance review on the SocialMCP planning artifact at fixtures/socialmcp-conformance/prefix-plan.md. Its declared target_platform is \"Vercel serverless\". Extract every load-bearing decision tied to the platform, adversarially verify each against live sources (Vercel docs, provider changelogs, npm), and write the cited findings JSON + verdict to artifacts/outputs/socialmcp/platform-review/. Default to VIOLATION on anything you cannot positively confirm with a current source.",
+      "expected_output": "conformance_verdict == VIOLATIONS_FOUND. The findings JSON (list of {decision, claim, platform_reality, severity, fix, source_url}) reproduces all four BLOCKER platform findings from fixtures/socialmcp-conformance/expected-findings.json: B1 (in-process setInterval/setTimeout OAuth refresh cannot fire on Vercel serverless), B2 (better-sqlite3 local file non-viable on ephemeral serverless FS), B3 (\"Vercel KV\" retired -> Upstash Redis), B4 (MCP stdio/SSE legacy; hosted MCP on Vercel wants Streamable HTTP) — each with severity BLOCKER and a live source_url. blocker_count >= 4. Recall >= 4/4 on B1-B4 with cited sources. Few/no false positives: MUST NOT flag any item in expected-findings.json distractors_must_not_flag (TypeScript 5.4/Node 22, Turborepo+pnpm, Zod, Pino, Official WhatsApp Cloud API, Vercel Edge Config, region iad1/cdg1, GitHub Actions CI matrix). No platform fact is hardcoded; every verdict cites a runtime source.",
+      "mode": "build",
+      "files": ["fixtures/socialmcp-conformance/prefix-plan.md", "fixtures/socialmcp-conformance/expected-findings.json"],
+      "scoring": {
+        "recall_target": "4/4 on B1-B4 (named decision + platform_reality match + cited source)",
+        "false_positive_check": "zero hits against distractors_must_not_flag",
+        "verdict_expected": "VIOLATIONS_FOUND",
+        "blocker_count_expected": ">= 4",
+        "citation_required": "every finding has a non-empty live source_url"
+      }
+    },
+    {
+      "id": 2,
+      "name": "negative-clean-postfix-plan-conforms",
+      "prompt": "Run a platform-conformance review on the CORRECTED SocialMCP plan at /Users/guillermo.meyer/Documents/globai-prod/globai_SocialMCP/artifacts/outputs/code-development/code-task-planning/PLAN-SPEC-PLAN-SOCIALMCPPACK-CODE-DEVELOPMENT-2026-06-20T21-09-56-726Z-20260620.md. target_platform is \"Vercel serverless\". This plan already folds in the platform fixes (Vercel Cron, Turso/libSQL, Streamable HTTP via mcp-handler, Upstash Redis, valid */30 cron). Verify each load-bearing decision against live sources and write findings + verdict to artifacts/outputs/socialmcp/platform-review-postfix/.",
+      "expected_output": "conformance_verdict == CONFORMS or CONFORMS_WITH_RISKS (NO false BLOCKERs). The previously-flagged decisions now conform with cited sources: scheduling uses a Vercel Cron route (not an in-process timer), persistence uses Turso/libSQL over HTTP (not a local better-sqlite3 file), transport is Streamable HTTP via mcp-handler (not legacy SSE), the cache is Upstash Redis (not retired \"Vercel KV\"), and the cron expression */30 is valid. blocker_count == 0. The clean pole proves the skill does not over-flag a conformant artifact.",
+      "mode": "build",
+      "files": ["/Users/guillermo.meyer/Documents/globai-prod/globai_SocialMCP/artifacts/outputs/code-development/code-task-planning/PLAN-SPEC-PLAN-SOCIALMCPPACK-CODE-DEVELOPMENT-2026-06-20T21-09-56-726Z-20260620.md"],
+      "scoring": {
+        "verdict_expected": "CONFORMS | CONFORMS_WITH_RISKS",
+        "blocker_count_expected": "0",
+        "false_blocker_check": "no BLOCKER finding against any of the corrected decisions"
+      }
+    },
+    {
+      "id": 3,
+      "name": "repair-add-missed-region-residency-decision",
+      "prompt": "A prior adversarial-platform-review run on fixtures/socialmcp-conformance/prefix-plan.md produced CONFORMANCE-FINDINGS-*.json in artifacts/outputs/socialmcp/platform-review/, but the human reviewer noted it never verified the region/data-residency decision (iad1 US / cdg1 EU selection) and that the B3 finding's source_url points to a stale blog instead of the Vercel marketplace changelog. Re-run in REPAIR mode with failure_feedback: \"target=region-data-residency: extract and verify the iad1/cdg1 region selection against current Vercel region + compliance docs; target=B3: re-ground the Vercel KV retirement finding against the official Vercel/Upstash marketplace source.\" Preserve all other findings verbatim.",
+      "expected_output": "REPAIR mode: reuses the SESSION_ID from the prior CONFORMANCE-FINDINGS-* filename (no new folder, no new session), parses failure_feedback into two REPAIR_DIRECTIVES, adds/verifies only the region-data-residency decision and re-grounds only the B3 source_url, and preserves B1/B2/B4 and the cron finding verbatim. Audit gains a Repair History entry (directives_applied, decisions_changed, decisions_preserved) and the review version is bumped (semver patch). conformance_verdict stays VIOLATIONS_FOUND; blocker_count recomputed. The sidecar re-emits with the updated findings path.",
+      "mode": "repair",
+      "files": ["fixtures/socialmcp-conformance/prefix-plan.md"],
+      "scoring": {
+        "surgical_repair": "only region-data-residency added/verified and B3 re-grounded; B1/B2/B4/cron preserved verbatim",
+        "session_reuse": "SESSION_ID reused from prior filename; no mkdir",
+        "audit_delta": "Repair History entry present + version bumped"
+      }
+    }
+  ]
+}

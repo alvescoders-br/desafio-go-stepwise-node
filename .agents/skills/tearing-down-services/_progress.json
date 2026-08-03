@@ -1,0 +1,13 @@
+{
+  "skill": "tearing-down-services",
+  "session_id": "ENGINEERING-TEARDOWN-20260515",
+  "status": "COMPLETED",
+  "started_at": "2026-05-15T19:35:00Z",
+  "completed_at": "2026-05-15T19:42:00Z",
+  "total": 2,
+  "completed": 2,
+  "items": [
+    { "phase": "target-identification", "status": "COMPLETE" },
+    { "phase": "signal-and-verify", "status": "COMPLETE" }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "skill": "engineering-skills",
+  "session_id": "ENGINEERING-HARVESTINGMEETINGCONTEXT-20260430",
+  "status": "COMPLETED",
+  "started_at": "2026-04-30T13:14:07Z",
+  "completed_at": "2026-04-30T13:30:00Z",
+  "total": 6,
+  "completed": 6,
+  "items": [
+    { "id": "STEP-1", "title": "Initialize", "status": "COMPLETE", "file": "_progress.json" },
+    { "id": "STEP-2", "title": "Phase A — Analysis", "status": "COMPLETE", "file": null },
+    { "id": "STEP-3", "title": "Phase B — Architecture", "status": "COMPLETE", "file": null },
+    { "id": "STEP-4", "title": "Phase C — SKILL.md", "status": "COMPLETE", "file": "SKILL.md" },
+    { "id": "STEP-5", "title": "Phase D — Reference files", "status": "COMPLETE", "file": "references/" },
+    { "id": "STEP-6", "title": "Phase E — Validation/Audit", "status": "COMPLETE", "file": "ENGINEERING-AUDIT-ENGINEERING-HARVESTINGMEETINGCONTEXT-20260430.md" }
+  ],
+  "files_written": [
+    "SKILL.md",
+    "references/phase-a-environment-setup.md",
+    "references/phase-b-preprocessing.md",
+    "references/phase-c-transcription.md",
+    "references/phase-d-extraction-analysis.md",
+    "references/phase-e-output-assembly.md",
+    "evals/evals.json",
+    "ENGINEERING-AUDIT-ENGINEERING-HARVESTINGMEETINGCONTEXT-20260430.md"
+  ],
+  "pattern_compliance": "8/8",
+  "anti_patterns_introduced": 0
+}

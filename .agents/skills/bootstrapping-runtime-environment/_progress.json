@@ -1,0 +1,15 @@
+{
+  "skill": "bootstrapping-runtime-environment",
+  "session_id": "ENGINEERING-BOOTSTRAPRT-20260515",
+  "status": "COMPLETED",
+  "started_at": "2026-05-15T13:40:00Z",
+  "completed_at": "2026-05-15T13:55:00Z",
+  "total": 4,
+  "completed": 4,
+  "items": [
+    { "phase": "stack-detection", "status": "COMPLETE" },
+    { "phase": "service-provisioning", "status": "COMPLETE" },
+    { "phase": "env-and-migrations", "status": "COMPLETE" },
+    { "phase": "report-and-validation", "status": "COMPLETE" }
+  ]
+}
