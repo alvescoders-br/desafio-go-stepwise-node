@@ -1,0 +1,4 @@
+[submodule "source/node-express-realworld"]
+	path = source/node-express-realworld
+	url = https://github.com/alvescoders-br/node-express-realworld.git
+	branch = main
